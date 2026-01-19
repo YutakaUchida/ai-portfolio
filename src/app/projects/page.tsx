@@ -2,24 +2,24 @@
 
 import ProjectCard from "@/components/features/ProjectCard";
 import { projects } from "@/lib/data";
-import { ProjectCategory } from "@/types";
+import { ProjectTag } from "@/types";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-const categories: (ProjectCategory | "すべて")[] = [
+const tags: (ProjectTag | "すべて")[] = [
     "すべて",
+    "BigQuery",
+    "LLM（生成AI）",
     "Chrome拡張",
     "GAS",
-    "自動化ツール",
     "Webアプリ",
-    "その他",
 ];
 
 export default function ProjectsPage() {
-    const [selectedCategory, setSelectedCategory] = useState<ProjectCategory | "すべて">("すべて");
+    const [selectedTag, setSelectedTag] = useState<ProjectTag | "すべて">("すべて");
 
     const filteredProjects = projects.filter(
-        (project) => selectedCategory === "すべて" || project.category === selectedCategory
+        (project) => selectedTag === "すべて" || project.tags.includes(selectedTag)
     );
 
     return (
@@ -39,18 +39,18 @@ export default function ProjectsPage() {
                     </p>
                 </motion.div>
 
-                {/* Category Filter */}
+                {/* Tag Filter */}
                 <div className="mb-12 flex flex-wrap justify-center gap-2">
-                    {categories.map((category) => (
+                    {tags.map((tag) => (
                         <button
-                            key={category}
-                            onClick={() => setSelectedCategory(category)}
-                            className={`rounded-full px-6 py-2 text-sm font-medium transition-all ${selectedCategory === category
+                            key={tag}
+                            onClick={() => setSelectedTag(tag)}
+                            className={`rounded-full px-6 py-2 text-sm font-medium transition-all ${selectedTag === tag
                                     ? "bg-primary text-white shadow-lg shadow-primary/25"
                                     : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:text-gray-900"
                                 }`}
                         >
-                            {category}
+                            {tag}
                         </button>
                     ))}
                 </div>

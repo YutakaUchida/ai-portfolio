@@ -2,17 +2,29 @@
 
 import { projects } from "@/lib/data";
 import { motion } from "framer-motion";
-import { Brain, Cpu, Globe, Zap } from "lucide-react";
+import { Brain, Cpu, Globe, Zap, Target } from "lucide-react";
 
 // プロジェクトデータから統計を計算
 const totalProjects = projects.length;
 const totalSavedHours = projects.reduce((sum, p) => sum + (p.savedHours || 0), 0);
 const uniqueCategories = new Set(projects.map((p) => p.category)).size;
+const hourlyRate = 2000; // 時給単価
+// 削減時間の金額換算 + 直接指定の売上・インパクト金額
+const totalImpactAmount = projects.reduce((sum, p) => sum + (p.impactAmount || 0), 0);
+const totalSavedAmount = totalSavedHours * hourlyRate + totalImpactAmount;
+
+// 金額をフォーマット（万円単位）
+const formatAmount = (amount: number) => {
+    if (amount >= 10000) {
+        return `${Math.round(amount / 10000)}万円`;
+    }
+    return `${amount.toLocaleString()}円`;
+};
 
 const stats = [
     { label: "開発プロジェクト数", value: `${totalProjects}` },
-    { label: "効率化した作業時間", value: `${totalSavedHours}h` },
-    { label: "社内利用者数", value: "50+" },
+    { label: "効率化した作業時間", value: `${totalSavedHours.toLocaleString()}h` },
+    { label: "削減金額（時給換算）", value: formatAmount(totalSavedAmount) },
     { label: "活用ツール種別", value: `${uniqueCategories}` },
 ];
 
@@ -83,16 +95,18 @@ export default function AboutPage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
                     >
-                        <h2 className="mb-6 text-3xl font-bold text-gray-900">私たちのミッション</h2>
+                        <h2 className="mb-6 text-3xl font-bold text-gray-900">チームミッション</h2>
                         <div className="space-y-6 text-gray-600">
-                            <p>
-                                AI事業部は、社内の業務効率化を推進するチームです。
-                                日々の業務で発生する繰り返し作業や手作業を自動化し、
-                                社員がより創造的な業務に集中できる環境を整えることを目指しています。
+                            <p className="text-lg font-medium text-gray-800">
+                                全社のAI活用を推進することで、生産性の向上および新たな事業価値の創出に貢献する
                             </p>
                             <p>
-                                Chrome拡張機能、Google Apps Script、Python自動化スクリプトなど、
-                                適材適所のツールを選択し、現場のニーズに合わせたソリューションを提供しています。
+                                インターゾーンの拡大＝人員・人件費の拡大とするのではなく、
+                                AI活用を前提とした業務改革を進めることで、売上が拡大しても現在の人員で耐えうる仕組みをつくり、
+                                収益性を飛躍的に向上させることを目指しています。
+                            </p>
+                            <p>
+                                また社内改善の事例を事業につなげることで、さらなる事業拡大に貢献します。
                             </p>
                         </div>
                     </motion.div>
@@ -100,11 +114,21 @@ export default function AboutPage() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="relative aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-blue-50 to-orange-50 border border-gray-100"
+                        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-blue-50 to-orange-50 border border-gray-100 p-8"
                     >
-                        {/* Abstract visual representation */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <Brain className="h-32 w-32 text-primary/40" />
+                        <div className="flex items-center gap-3 mb-4">
+                            <Target className="h-6 w-6 text-primary" />
+                            <h3 className="text-xl font-bold text-gray-900">年間目標</h3>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="rounded-lg bg-white/80 p-4 border border-gray-200">
+                                <div className="text-3xl font-bold text-primary mb-1">3,000万円</div>
+                                <div className="text-sm text-gray-600">売上 + 業務改善インパクトの合計</div>
+                            </div>
+                            <div className="text-sm text-gray-600 space-y-2">
+                                <p><span className="font-medium">売上：</span>AI活用による他部署の販売サポート</p>
+                                <p><span className="font-medium">業務改善：</span>削減業務時間 × 時給単価で算出</p>
+                            </div>
                         </div>
                     </motion.div>
                 </div>

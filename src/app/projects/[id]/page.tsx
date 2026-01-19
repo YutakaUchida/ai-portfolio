@@ -1,9 +1,18 @@
 import { projects } from "@/lib/data";
 import StepCarousel from "@/components/features/StepCarousel";
-import { ArrowLeft, ExternalLink, Github } from "lucide-react";
+import { ArrowLeft, ExternalLink, Github, Clock, TrendingUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
+const hourlyRate = 2000; // 時給単価
+
+const formatAmount = (amount: number) => {
+    if (amount >= 10000) {
+        return `${Math.round(amount / 10000)}万円`;
+    }
+    return `${amount.toLocaleString()}円`;
+};
 
 interface ProjectPageProps {
     params: Promise<{
@@ -39,10 +48,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 {/* 見出し */}
                 <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
                     <div>
-                        <div className="mb-2 flex items-center gap-2">
-                            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary border border-primary/20">
-                                {project.category}
-                            </span>
+                        <div className="mb-2 flex flex-wrap items-center gap-2">
+                            {project.tags.map((tag) => (
+                                <span
+                                    key={tag}
+                                    className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary border border-primary/20"
+                                >
+                                    {tag}
+                                </span>
+                            ))}
                             {project.featured && (
                                 <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-600 border border-amber-200">
                                     注目
@@ -80,6 +94,19 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     </div>
                 </div>
 
+                {/* 解決する課題 */}
+                {project.problem && (
+                    <div className="mb-8 rounded-xl border border-amber-200 bg-amber-50 p-6">
+                        <h3 className="mb-3 text-lg font-semibold text-amber-800 flex items-center gap-2">
+                            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-200 text-amber-700 text-sm">?</span>
+                            解決する課題
+                        </h3>
+                        <p className="text-amber-900 leading-relaxed">
+                            {project.problem}
+                        </p>
+                    </div>
+                )}
+
                 {/* 概要・主な機能 */}
                 <div className="mb-10 prose max-w-none">
                     <h3 className="text-xl font-semibold text-gray-900">概要</h3>
@@ -87,12 +114,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                         {project.longDescription || project.description}
                     </p>
 
-                    <h3 className="mt-8 text-xl font-semibold text-gray-900">主な機能</h3>
-                    <ul className="list-disc pl-5 text-gray-600 space-y-2">
-                        <li>業務効率の大幅な改善</li>
-                        <li>使いやすいインターフェース</li>
-                        <li>安定した動作</li>
-                    </ul>
+                    {project.features && project.features.length > 0 && (
+                        <>
+                            <h3 className="mt-8 text-xl font-semibold text-gray-900">主な機能</h3>
+                            <ul className="list-disc pl-5 text-gray-600 space-y-2">
+                                {project.features.map((feature, index) => (
+                                    <li key={index}>{feature}</li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
                 </div>
 
                 {/* ステップカルーセル or サムネイル画像 */}
@@ -115,32 +146,55 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     </div>
                 )}
 
-                {/* 使用技術・完成日 */}
-                <div className="grid gap-6 sm:grid-cols-2">
-                    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500">
-                            使用技術
-                        </h3>
-                        <div className="flex flex-wrap gap-2">
-                            {project.technologies.map((tech) => (
-                                <span
-                                    key={tech}
-                                    className="rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-700"
-                                >
-                                    {tech}
-                                </span>
-                            ))}
+                {/* 効率化した作業時間 */}
+                {project.savedHours && project.savedHours > 0 && (
+                    <div className="mb-10 rounded-xl border border-green-200 bg-green-50 p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                            <Clock className="h-6 w-6 text-green-600" />
+                            <h3 className="text-lg font-semibold text-green-800">効率化した作業時間</h3>
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="rounded-lg bg-white/80 p-4 border border-green-200">
+                                <div className="text-3xl font-bold text-green-700">{project.savedHours.toLocaleString()}時間</div>
+                                <div className="text-sm text-green-600">年間の削減時間</div>
+                            </div>
+                            <div className="rounded-lg bg-white/80 p-4 border border-green-200">
+                                <div className="text-3xl font-bold text-green-700">{formatAmount(project.savedHours * hourlyRate)}</div>
+                                <div className="text-sm text-green-600">時給{hourlyRate.toLocaleString()}円換算</div>
+                            </div>
                         </div>
                     </div>
+                )}
 
-                    {project.completionDate && (
-                        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-gray-500">
-                                完成日
-                            </h3>
-                            <p className="text-gray-900">{project.completionDate}</p>
+                {/* 売上・インパクト金額 */}
+                {project.impactAmount && project.impactAmount > 0 && (
+                    <div className="mb-10 rounded-xl border border-blue-200 bg-blue-50 p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                            <TrendingUp className="h-6 w-6 text-blue-600" />
+                            <h3 className="text-lg font-semibold text-blue-800">ビジネスインパクト</h3>
                         </div>
-                    )}
+                        <div className="rounded-lg bg-white/80 p-4 border border-blue-200">
+                            <div className="text-3xl font-bold text-blue-700">{formatAmount(project.impactAmount)}</div>
+                            <div className="text-sm text-blue-600">{project.impactLabel || "年間インパクト"}</div>
+                        </div>
+                    </div>
+                )}
+
+                {/* 使用技術 */}
+                <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                    <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500">
+                        使用技術
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                        {project.technologies.map((tech) => (
+                            <span
+                                key={tech}
+                                className="rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-700"
+                            >
+                                {tech}
+                            </span>
+                        ))}
+                    </div>
                 </div>
             </div>
         </main>

@@ -29,8 +29,15 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-40 transition-opacity group-hover:opacity-20" />
 
-                <div className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-primary backdrop-blur-md border border-primary/20 shadow-sm">
-                    {project.category}
+                <div className="absolute right-4 top-4 flex flex-wrap gap-1 justify-end">
+                    {project.tags.map((tag) => (
+                        <span
+                            key={tag}
+                            className="rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-primary backdrop-blur-md border border-primary/20 shadow-sm"
+                        >
+                            {tag}
+                        </span>
+                    ))}
                 </div>
             </div>
 
