@@ -7,7 +7,7 @@ import { Brain, Cpu, Globe, Zap, Target } from "lucide-react";
 // プロジェクトデータから統計を計算
 const totalProjects = projects.length;
 const totalSavedHours = projects.reduce((sum, p) => sum + (p.savedHours || 0), 0);
-const uniqueCategories = new Set(projects.map((p) => p.category)).size;
+const uniqueTags = new Set(projects.flatMap((p) => p.tags)).size;
 const hourlyRate = 2000; // 時給単価
 // 削減時間の金額換算 + 直接指定の売上・インパクト金額
 const totalImpactAmount = projects.reduce((sum, p) => sum + (p.impactAmount || 0), 0);
@@ -25,7 +25,7 @@ const stats = [
     { label: "開発プロジェクト数", value: `${totalProjects}` },
     { label: "効率化した作業時間", value: `${totalSavedHours.toLocaleString()}h` },
     { label: "削減金額（時給換算）", value: formatAmount(totalSavedAmount) },
-    { label: "活用ツール種別", value: `${uniqueCategories}` },
+    { label: "活用ツール種別", value: `${uniqueTags}` },
 ];
 
 const values = [
