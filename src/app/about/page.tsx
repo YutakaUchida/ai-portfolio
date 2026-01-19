@@ -25,7 +25,7 @@ const stats = [
     { label: "開発プロジェクト数", value: `${totalProjects}` },
     { label: "効率化した作業時間", value: `${totalSavedHours.toLocaleString()}h` },
     { label: "削減金額（時給換算）", value: formatAmount(totalSavedAmount) },
-    { label: "活用技術", value: `${uniqueTechnologies}` },
+    { label: "活用した技術", value: `${uniqueTechnologies}` },
 ];
 
 const values = [
