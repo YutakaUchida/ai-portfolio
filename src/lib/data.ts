@@ -106,11 +106,31 @@ export const projects: Project[] = [
             "全クライアントへの見せ方変更・新しいグラフ追加も一気に対応",
         ],
         tags: ["BigQuery", "GAS"],
-        imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop",
+        imageUrl: "/images/gnote-call-result-report.png",
         technologies: ["Google BigQuery", "自作HTML", "Google Apps Script"],
         featured: false,
         impactAmount: 250000,
         impactLabel: "年間インパクト",
+        steps: [
+            {
+                type: "image",
+                url: "/images/gnote-call-result-report.png",
+                title: "コール結果ダッシュボード",
+                description: "つながり率、入庫数、コール費用などの主要KPIをグラフ付きで一目で把握。店舗別・ステータス別の分析も可能です。",
+            },
+            {
+                type: "image",
+                url: "/images/gnote-call-result-report-2.png",
+                title: "エリア/店舗別・ステータス別分析",
+                description: "エリア・店舗別の入庫率や、ステータスごとに「その後入庫になった件数」を追跡。どの店舗が成果を出しているか、どのステータスが入庫につながりやすいかが一目でわかります。",
+            },
+            {
+                type: "image",
+                url: "/images/gnote-call-result-report-3.png",
+                title: "月別推移・詳細データ",
+                description: "月別推移グラフで前年同期との比較が可能。期間も自由に変更でき、コール結果詳細テーブルで全ての数値を確認できます。気になった箇所はすべて数値で深掘りできます。",
+            },
+        ],
     },
     {
         id: "6",
